@@ -3,6 +3,19 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './styles.css'
 
+if (!Array.prototype.at) {
+  Object.defineProperty(Array.prototype, 'at', {
+    configurable: true,
+    writable: true,
+    value: function(index){
+      const len = this.length >>> 0
+      let i = Number(index) || 0
+      if (i < 0) i += len
+      return i < 0 || i >= len ? undefined : this[i]
+    }
+  })
+}
+
 class AppErrorBoundary extends React.Component {
   constructor(props){super(props);this.state={error:null}}
   static getDerivedStateFromError(error){return {error}}
