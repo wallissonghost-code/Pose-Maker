@@ -4,13 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#090b10" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Pose Maker</title>
+    <style>
+      #pm-build{position:fixed;right:8px;bottom:6px;z-index:99999;font:10px/1.2 monospace;color:#8b95a8;background:#0b0e14d9;border:1px solid #273044;border-radius:6px;padding:4px 6px;pointer-events:none}
+      #pm-boot-error{position:fixed;inset:0;z-index:99998;display:none;overflow:auto;background:#090b10;color:#eef1f7;padding:18px;font-family:system-ui,-apple-system,sans-serif}
+      #pm-boot-error pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#07090d;border:1px solid #273044;border-radius:8px;padding:10px;font:11px/1.45 monospace}
+    </style>
+    <script>
+      window.__POSE_MAKER_BUILD__='PM-20260811-1155-A';
+      function pmShowBootError(title,detail){
+        var box=document.getElementById('pm-boot-error');
+        if(!box)return;
+        box.style.display='block';
+        box.innerHTML='<strong>POSE MAKER • BOOT RAW</strong><h1>'+title+'</h1><pre>'+String(detail||'Sem detalhes').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre><p>BUILD: '+window.__POSE_MAKER_BUILD__+'</p>';
+      }
+      window.addEventListener('error',function(e){pmShowBootError('Erro JavaScript antes do editor', (e.error&&e.error.stack)||e.message||e);});
+      window.addEventListener('unhandledrejection',function(e){var r=e.reason;pmShowBootError('Erro assíncrono antes do editor',(r&&r.stack)||r);});
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <div id="pm-boot-error"></div>
+    <div id="pm-build">PM-20260811-1155-A</div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
