@@ -1,6 +1,5 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import * as THREE from 'three'
-import { TransformControls } from '@react-three/drei'
 
 const matColor = (active) => active ? '#6f8cff' : '#d8dbe4'
 const jointColor = (active) => active ? '#f0b35b' : '#2a2f3b'
@@ -45,17 +44,11 @@ function solve2Bone(root, target, len1, len2, bendSign=1, planeZ=0){
   return {joint:elbow.toArray(), end:t.toArray()}
 }
 
-function IKHandle({position, active, onSelect, onChange}){
-  const ref = useRef()
-  return <>
-    <mesh ref={ref} position={position} onClick={(e)=>{e.stopPropagation();onSelect()}}>
-      <sphereGeometry args={[active?.11:.075,18,18]}/>
-      <meshStandardMaterial color={active?'#72e2ff':'#57657f'} emissive={active?'#164c59':'#000000'} emissiveIntensity={1.5}/>
-    </mesh>
-    {active && <TransformControls object={ref} mode="translate" size={.72} onObjectChange={()=>{
-      if(ref.current) onChange(ref.current.position.toArray())
-    }}/>} 
-  </>
+function IKHandle({position, active, onSelect}){
+  return <mesh position={position} onClick={(e)=>{e.stopPropagation();onSelect()}}>
+    <sphereGeometry args={[active?.11:.075,18,18]}/>
+    <meshStandardMaterial color={active?'#72e2ff':'#57657f'} emissive={active?'#164c59':'#000000'} emissiveIntensity={1.5}/>
+  </mesh>
 }
 
 export default function AvatarRig({ selectedBone, setSelectedBone, pose, ikEnabled, ikTargets, setIkTarget, selectedIK, setSelectedIK, weaponAttached, skinColor='#d8dbe4', hairColor='#242832', exportYaw=0, showControls=true }) {
@@ -99,10 +92,10 @@ export default function AvatarRig({ selectedBone, setSelectedBone, pose, ikEnabl
       <Bone a={hipR} b={legR.joint} radius={.14} color={matColor(selectedBone==='legR')}/><Bone a={legR.joint} b={legR.end} radius={.125} color={matColor(selectedBone==='legR')}/>
       <Joint p={legR.joint}/><Joint p={legR.end} active={selectedBone==='legR'} onClick={click('legR')}/>
 
-      {showControls&&<><IKHandle position={ikTargets.handL} active={selectedIK==='handL'} onSelect={()=>setSelectedIK('handL')} onChange={p=>setIkTarget('handL',p)} />
-      <IKHandle position={ikTargets.handR} active={selectedIK==='handR'} onSelect={()=>setSelectedIK('handR')} onChange={p=>setIkTarget('handR',p)} />
-      <IKHandle position={ikTargets.footL} active={selectedIK==='footL'} onSelect={()=>setSelectedIK('footL')} onChange={p=>setIkTarget('footL',p)} />
-      <IKHandle position={ikTargets.footR} active={selectedIK==='footR'} onSelect={()=>setSelectedIK('footR')} onChange={p=>setIkTarget('footR',p)} /></>}
+      {showControls&&<><IKHandle position={ikTargets.handL} active={selectedIK==='handL'} onSelect={()=>setSelectedIK('handL')} />
+      <IKHandle position={ikTargets.handR} active={selectedIK==='handR'} onSelect={()=>setSelectedIK('handR')} />
+      <IKHandle position={ikTargets.footL} active={selectedIK==='footL'} onSelect={()=>setSelectedIK('footL')} />
+      <IKHandle position={ikTargets.footR} active={selectedIK==='footR'} onSelect={()=>setSelectedIK('footR')} /></>}
     </> : <>
       <group position={shoulderL} rotation={rot('armL')} onClick={click('armL')}><mesh position={[-.23,-.35,0]} rotation={[0,0,.3]}><capsuleGeometry args={[.12,.9,8,16]}/><meshStandardMaterial color={matColor(selectedBone==='armL')}/></mesh></group>
       <group position={shoulderR} rotation={rot('armR')} onClick={click('armR')}><mesh position={[.23,-.35,0]} rotation={[0,0,-.3]}><capsuleGeometry args={[.12,.9,8,16]}/><meshStandardMaterial color={matColor(selectedBone==='armR')}/></mesh></group>
